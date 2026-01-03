@@ -46,7 +46,7 @@ services:
       dockerfile: Dockerfile
     container_name: laravel_php
     working_dir: /var/www/html
-    user: "1000:1000"  # Evita problemas de permisos (ajusta si usas Windows)
+    # user: "1000:1000"  # Descomentar solo si tienes problemas de permisos en Linux/WSL2
     volumes:
       - ./:/var/www/html
     depends_on:
