@@ -32,8 +32,10 @@ laravel-docker-setup/
 
 ### 1️⃣ Clonar el repositorio
 
+Abre una terminal en la carpeta donde quieras crear el proyecto y reemplaza mi-proyecto por el nombre que prefieras (por ejemplo: `proyecto-hola-mundo`).
+
 ```bash
-git clone https://github.com/TU-USUARIO/laravel-docker-setup.git mi-proyecto
+git clone https://github.com/endiva112/laravel-docker-setup.git mi-proyecto
 cd mi-proyecto
 ```
 
