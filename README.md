@@ -43,7 +43,8 @@ laravel-docker-setup/          ← Repositorio (configuración Docker)
 ### Paso 1️⃣: Clonar la configuración Docker
 
 ```bash
-git clone https://github.com/TU-USUARIO/laravel-docker-setup.git mi-proyecto
+
+git clone https://github.com/endiva112/laravel-docker-setup.git mi-proyecto
 cd mi-proyecto
 ```
 
