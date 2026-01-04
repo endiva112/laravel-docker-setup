@@ -43,7 +43,7 @@ laravel-docker-setup/          ← Repositorio (configuración Docker)
 **Elige tu sistema operativo:**
 
 - [⚡ WSL2 en Windows (RECOMENDADO)](#-instalación-en-wsl2---recomendado) - 10-50x más rápido
-- [🪟 Windows / 🐧 Linux](#-instalación-en-windows--linux) - Instalación estándar
+- [💻 Windows / 🐧 Linux](#-instalación-en-windows--linux) - Instalación estándar
 
 ---
 
