@@ -43,8 +43,7 @@ laravel-docker-setup/          ← Repositorio (configuración Docker)
 ### Paso 1️⃣: Clonar la configuración Docker
 
 ```bash
-
-git clone https://github.com/endiva112/laravel-docker-setup.git mi-proyecto
+git clone https://github.com/TU-USUARIO/laravel-docker-setup.git mi-proyecto
 cd mi-proyecto
 ```
 
@@ -78,10 +77,11 @@ docker compose run --rm composer create-project laravel/laravel src
 ```
 
 **¿Qué está pasando aquí?**
-- Usas Composer (gestor de paquetes PHP) **dentro del contenedor**
+- Usas Composer (gestor de paquetes PHP) **dentro de un contenedor temporal**
 - Composer descarga Laravel y todas sus dependencias
 - Todo se instala en la carpeta `src/`
 - `--rm` significa que el contenedor de Composer se elimina automáticamente al terminar
+- **IMPORTANTE:** Este comando funciona SIN que los contenedores estén levantados
 
 **Esto tarda 1-2 minutos** (descarga ~50MB de código).
 
@@ -89,13 +89,15 @@ docker compose run --rm composer create-project laravel/laravel src
 
 ### Paso 4️⃣: Levantar todos los servicios
 
+**Ahora que Laravel ya está instalado en `src/`, podemos levantar los servicios:**
+
 ```bash
 docker compose up -d
 ```
 
 **¿Qué está pasando?**
 - Nginx (servidor web) empieza a escuchar en el puerto 80
-- PHP-FPM (intérprete de PHP) se levanta
+- PHP-FPM (intérprete de PHP) se levanta y encuentra Laravel en `/var/www/html`
 - MySQL (base de datos) se inicia
 - phpMyAdmin (interfaz web para MySQL) se levanta
 - `-d` = "detached mode" (segundo plano)
@@ -155,18 +157,22 @@ Abre tu navegador en:
    build                 (instala PHP, Nginx, MySQL en contenedores)
                          (todavía NO tienes Laravel)
 
-3. composer create    → AHORA SÍ creas el proyecto Laravel
-   -project              usando Composer dentro del contenedor
-                         Laravel aparece en src/
+3. docker compose     → Crea un contenedor TEMPORAL de Composer
+   run composer          Descarga e instala Laravel en src/
+                         El contenedor se elimina automáticamente
+                         (AHORA SÍ tienes Laravel)
 
-4. docker compose     → Levantas todos los servicios
-   up -d                 (servidor web, PHP, base de datos)
+4. docker compose     → Levantas todos los servicios permanentes
+   up -d                 Los contenedores ya encuentran Laravel en src/
+                         (servidor web, PHP, base de datos)
 
 5. artisan key:       → Configuración inicial de Laravel
-   generate + migrate
+   generate + migrate    (Laravel ya está, los servicios ya están)
 ```
 
-**Clave:** Primero preparas el entorno (Docker), **luego** creas el proyecto (Laravel).
+**Clave:** Primero preparas el entorno (Docker), luego creas el proyecto (Laravel con `run`), **y después** levantas los servicios (`up`).
+
+**Nota importante:** `docker compose run` crea contenedores temporales que se autodestruyen. No necesitas que los servicios estén levantados para usarlo.
 
 ---
 
