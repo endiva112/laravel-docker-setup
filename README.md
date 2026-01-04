@@ -42,8 +42,8 @@ laravel-docker-setup/          ← Repositorio (configuración Docker)
 
 **Elige tu sistema operativo:**
 
-- [⚡ WSL2 en Windows (RECOMENDADO)](#-instalación-en-wsl2-recomendado) - 10-50x más rápido
-- [💻 Windows / 🐧 Linux](#-instalación-en-windows-y-linux) - Instalación estándar
+- [⚡ WSL2 en Windows (RECOMENDADO)](#instalación-en-wsl2-recomendado) - 10-50x más rápido
+- [💻 Windows / Linux](#instalación-en-windows--linux) - Instalación estándar
 
 ---
 
@@ -58,34 +58,33 @@ laravel-docker-setup/          ← Repositorio (configuración Docker)
 
 1. **Windows 10/11** con WSL2 habilitado
 2. **Docker Desktop** con integración WSL2 activada
-3. **Ubuntu** desde Microsoft Store
+3. **Ubuntu** desde Microsoft Store (la versión no es muy importante)
 
-#### 🔧 Instalar Ubuntu en WSL2
+#### 🔧 Instalar Ubuntu desde Microsoft Store
 
-Si aún no tienes Ubuntu instalado:
-
-```powershell
-# Desde PowerShell como administrador
-wsl --install -d Ubuntu
-
-# Sigue las instrucciones para crear usuario y contraseña
-# Luego cierra y vuelve a abrir "Ubuntu" desde el menú de inicio
-```
+1. Abre la **Microsoft Store** en Windows
+2. Busca "Ubuntu"
+3. Instala la aplicación (cualquier versión reciente funciona)
+4. Una vez instalada, ábrela como cualquier otra aplicación
+5. La primera vez te pedirá crear un usuario y contraseña
 
 ---
 
 ### 🚀 Pasos de instalación (WSL2)
 
-**⚠️ IMPORTANTE:** Ejecuta todos los comandos desde el **terminal de Ubuntu**, NO desde PowerShell/CMD.
+**⚠️ IMPORTANTE:** Ejecuta todos los comandos desde la aplicación **Ubuntu**, NO desde PowerShell/CMD.
 
-#### Paso 1️⃣: Navega a tu carpeta de proyectos EN WSL2
+#### Paso 1️⃣: Verifica tu ubicación y crea carpeta de proyectos
 
 ```bash
-# Abre "Ubuntu" desde el menú de inicio de Windows
+# Abre la aplicación "Ubuntu" desde el menú de inicio
 
-# Ve a tu home (filesystem NATIVO de WSL2, NO /mnt/c/)
-cd ~
+# Verifica que estás en tu home
+pwd
+# Debe mostrar: /home/tu-usuario (✅ CORRECTO)
+```
 
+```bash
 # Crea una carpeta para tus proyectos
 mkdir -p proyectos
 cd proyectos
@@ -94,7 +93,7 @@ cd proyectos
 **⚠️ CRÍTICO:** Asegúrate de estar en `/home/tu-usuario/...` y NO en `/mnt/c/...`
 
 ```bash
-# Verifica tu ubicación
+# Verifica de nuevo tu ubicación
 pwd
 # Debe mostrar: /home/tu-usuario/proyectos (✅ CORRECTO)
 # Si muestra: /mnt/c/Users/... (❌ INCORRECTO, rendimiento lento)
@@ -107,8 +106,13 @@ pwd
 ```bash
 # Clona el repositorio
 git clone https://github.com/endiva112/laravel-docker-setup.git mi-proyecto
-cd mi-proyecto
+```
 
+```bash
+cd mi-proyecto
+```
+
+```bash
 # IMPORTANTE: Crea la carpeta src/ ANTES del build
 mkdir src
 ```
@@ -172,10 +176,22 @@ Deberías ver 4 contenedores activos.
 ```bash
 # Generar la clave de aplicación
 docker compose exec php php artisan key:generate
+```
 
+**¿Qué hace esto?**
+- Laravel necesita una clave única para encriptar datos
+- `artisan` es la herramienta de línea de comandos de Laravel
+- Se guarda automáticamente en `src/.env`
+
+```bash
 # Ejecutar las migraciones de base de datos
 docker compose exec php php artisan migrate
 ```
+
+**¿Qué hace esto?**
+- Crea las tablas iniciales en la base de datos MySQL
+- Laravel incluye algunas tablas por defecto (usuarios, sesiones, etc.)
+- **Nota:** La primera vez este comando no hará nada visible, ya que Laravel no tiene migraciones personalizadas todavía. Es solo para verificar que la conexión a la base de datos funciona correctamente.
 
 ---
 
@@ -225,7 +241,7 @@ Puedes crear un acceso directo para facilitar el acceso.
 
 ---
 
-## 💻 Instalación en Windows y Linux
+## 💻 Instalación en Windows / Linux
 
 **Mejor para:** Instalación rápida sin configuración adicional (Windows) o uso nativo (Linux).
 
@@ -252,18 +268,22 @@ newgrp docker
 
 ### 🚀 Pasos de instalación (Windows / Linux)
 
-#### Paso 1️⃣: Clonar y preparar el proyecto
+#### Paso 1️⃣: Clonar la configuración Docker
 
 ```bash
-# Clona el repositorio (donde quieras)
 git clone https://github.com/endiva112/laravel-docker-setup.git mi-proyecto
 cd mi-proyecto
-
-# IMPORTANTE (solo Linux): Crea src/ ANTES del build
-mkdir src
 ```
 
-**Usuarios de Windows:** No necesitan crear `src/` manualmente.
+**¿Qué acabas de hacer?**
+- Descargaste la **configuración del entorno de desarrollo**
+- Tienes los Dockerfiles, configuración de Nginx, MySQL, etc.
+- **No tienes Laravel todavía**, eso viene en el paso 3
+
+**Usuarios de Linux:** Crea la carpeta `src/` ahora:
+```bash
+mkdir src
+```
 
 ---
 
@@ -273,6 +293,14 @@ mkdir src
 docker compose build
 ```
 
+**¿Qué está pasando aquí?**
+- Docker está construyendo una imagen personalizada de PHP
+- Instala extensiones que Laravel necesita (MySQL, GD, ZIP, etc.)
+- Descarga las imágenes de Nginx, MySQL, phpMyAdmin, etc.
+- **Esto tarda 2-3 minutos la primera vez**
+
+**Importante:** Este paso **NO instala Laravel**, solo prepara el entorno donde Laravel vivirá.
+
 ---
 
 #### Paso 3️⃣: Crear el proyecto Laravel
@@ -281,22 +309,62 @@ docker compose build
 docker compose run --rm composer create-project laravel/laravel .
 ```
 
+**¿Qué está pasando aquí?**
+- Usas Composer (gestor de paquetes PHP) **dentro de un contenedor temporal**
+- Composer descarga Laravel y todas sus dependencias
+- Todo se instala en la carpeta `src/`
+- `--rm` significa que el contenedor de Composer se elimina automáticamente al terminar
+- **IMPORTANTE:** Este comando funciona SIN que los contenedores estén levantados
+
+**Esto tarda 1-2 minutos** (descarga ~50MB de código).
+
 ---
 
 #### Paso 4️⃣: Levantar todos los servicios
 
+**Ahora que Laravel ya está instalado en `src/`, podemos levantar los servicios:**
+
 ```bash
 docker compose up -d
 ```
+
+**¿Qué está pasando?**
+- Nginx (servidor web) empieza a escuchar en el puerto 80
+- PHP-FPM (intérprete de PHP) se levanta y encuentra Laravel en `/var/www/html`
+- MySQL (base de datos) se inicia
+- phpMyAdmin (interfaz web para MySQL) se levanta
+- `-d` = "detached mode" (segundo plano)
+
+**Verifica que todo esté corriendo:**
+```bash
+docker compose ps
+```
+
+Deberías ver 4 contenedores activos.
 
 ---
 
 #### Paso 5️⃣: Configurar Laravel
 
 ```bash
+# Generar la clave de aplicación
 docker compose exec php php artisan key:generate
+```
+
+**¿Qué hace esto?**
+- Laravel necesita una clave única para encriptar datos
+- `artisan` es la herramienta de línea de comandos de Laravel
+- Se guarda automáticamente en `src/.env`
+
+```bash
+# Ejecutar las migraciones de base de datos
 docker compose exec php php artisan migrate
 ```
+
+**¿Qué hace esto?**
+- Crea las tablas iniciales en la base de datos MySQL
+- Laravel incluye algunas tablas por defecto (usuarios, sesiones, etc.)
+- **Nota:** La primera vez este comando no hará nada visible, ya que Laravel no tiene migraciones personalizadas todavía. Es solo para verificar que la conexión a la base de datos funciona correctamente.
 
 ---
 
@@ -305,6 +373,9 @@ docker compose exec php php artisan migrate
 Abre tu navegador en:
 - **Laravel**: http://localhost
 - **phpMyAdmin**: http://localhost:8080
+  - Servidor: `db`
+  - Usuario: `laravel`
+  - Contraseña: `secret`
 
 ---
 
@@ -323,6 +394,8 @@ Abre tu navegador en:
 
 4. docker compose     → Crea un contenedor TEMPORAL de Composer
    run composer          Descarga e instala Laravel en src/
+                         El "." indica "carpeta actual" (/var/www/html)
+                         que mapea a ./src en tu PC
                          El contenedor se elimina automáticamente
                          (AHORA SÍ tienes Laravel en src/)
 
@@ -333,6 +406,8 @@ Abre tu navegador en:
 6. artisan key:       → Configuración inicial de Laravel
    generate + migrate    (Laravel ya está, los servicios ya están)
 ```
+
+**Clave:** Primero preparas el entorno (Docker), luego creas el proyecto (Laravel con `run`), **y después** levantas los servicios (`up`).
 
 **Nota importante:** `docker compose run` crea contenedores temporales que se autodestruyen. No necesitas que los servicios estén levantados para usarlo.
 
