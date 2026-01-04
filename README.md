@@ -409,7 +409,7 @@ rm -rf src/  # Linux/Mac
 rmdir /S /Q src  # Windows
 
 # Volver a crear proyecto
-docker compose run --rm composer create-project laravel/laravel .
+docker compose run --rm composer create-project laravel/laravel src
 docker compose up -d
 docker compose exec php php artisan key:generate
 docker compose exec php php artisan migrate
