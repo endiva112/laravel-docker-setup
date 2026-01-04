@@ -102,7 +102,7 @@ services:
     container_name: laravel_composer
     working_dir: /var/www/html
     volumes:
-      - ./src:/var/www/html
+      - ./:/var/www/html
     user: "${DOCKER_UID:-1000}:${DOCKER_GID:-1000}"
     networks:
       - laravel
@@ -116,7 +116,7 @@ services:
     container_name: laravel_node
     working_dir: /var/www/html
     volumes:
-      - ./src:/var/www/html
+      - ./:/var/www/html
       - node_modules:/var/www/html/node_modules
     ports:
       - "5173:5173"  # Puerto por defecto de Vite

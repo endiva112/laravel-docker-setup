@@ -158,9 +158,11 @@ Abre tu navegador en:
                          (todavía NO tienes Laravel)
 
 3. docker compose     → Crea un contenedor TEMPORAL de Composer
-   run composer          Descarga e instala Laravel en src/
+   run composer .        Descarga e instala Laravel en src/
+                         El "." indica "carpeta actual" (/var/www/html)
+                         que mapea a ./src en tu PC
                          El contenedor se elimina automáticamente
-                         (AHORA SÍ tienes Laravel)
+                         (AHORA SÍ tienes Laravel en src/)
 
 4. docker compose     → Levantas todos los servicios permanentes
    up -d                 Los contenedores ya encuentran Laravel en src/
@@ -407,7 +409,7 @@ rm -rf src/  # Linux/Mac
 rmdir /S /Q src  # Windows
 
 # Volver a crear proyecto
-docker compose run --rm composer create-project laravel/laravel src
+docker compose run --rm composer create-project laravel/laravel .
 docker compose up -d
 docker compose exec php php artisan key:generate
 docker compose exec php php artisan migrate
