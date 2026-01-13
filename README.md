@@ -93,7 +93,7 @@ docker compose build
 docker compose run --rm composer create-project laravel/laravel .
 ```
 
-¡Eso es todo! Ahora ve a la [Guía de primeros pasos](docs/GettingStarted.md) para configurar la base de datos y probar que todo funciona.
+¡Eso es todo! Ahora ve a la [Guía de primeros pasos](docs/01-primeros_pasos.md) para configurar la base de datos y probar que todo funciona.
 
 ---
 
@@ -111,7 +111,7 @@ Una vez configurado, tendrás acceso a:
 
 ## 📚 Documentación
 
-- **[Getting Started](docs/GettingStarted.md)** - Tutorial completo desde cero
+- **[Getting Started](docs/01-primeros_pasos.md)** - Tutorial completo desde cero
   - Configuración inicial
   - Primer "Hola Mundo"
   - Rutas, vistas y controladores
