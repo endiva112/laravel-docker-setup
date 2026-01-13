@@ -68,7 +68,7 @@ laravel-docker-setup/          ← Repositorio (configuración Docker)
 
 ## 🚀 Inicio rápido
 
-### Instalación en 4 pasos
+### Instalación en 7 pasos
 
 **1. Clona este repositorio**
 
