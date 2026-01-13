@@ -81,19 +81,49 @@ cd mi-proyecto
 mkdir src
 ```
 
-**3. Construye los contenedores**
+**3. Agrega tu usuario al grupo Docker**
+
+```bash
+sudo usermod -aG docker $USER
+```
+
+**4. Construye los contenedores**
 
 ```bash
 docker compose build
 ```
 
-**4. Crea el proyecto Laravel**
+**5. Crea el proyecto Laravel**
 
 ```bash
 docker compose run --rm composer create-project laravel/laravel .
 ```
 
-¡Eso es todo! Ahora ve a la [Guía de primeros pasos](docs/01-primeros_pasos.md) para configurar la base de datos y probar que todo funciona.
+**6. Configurar Laravel**
+
+Generar la clave de aplicación.
+
+```bash
+docker compose exec php php artisan key:generate
+```
+
+¿Qué hace esto?
+
+- Laravel necesita una clave única para encriptar datos
+- artisan es la herramienta de línea de comandos de Laravel
+- Se guarda automáticamente en src/.env
+
+Ejecutar las migraciones de base de datos
+
+```bash
+docker compose exec php php artisan migrate
+```
+
+¿Qué hace esto?
+
+- Crea las tablas iniciales en la base de datos MySQL
+- Laravel incluye algunas tablas por defecto (usuarios, sesiones, etc.)
+- Nota: La primera vez puede no verse ningún cambio. El objetivo es verificar que la conexión a MySQL funciona correctamente.
 
 ---
 
