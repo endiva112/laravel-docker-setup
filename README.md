@@ -28,6 +28,11 @@ Antes de empezar necesitas:
    - **Ubuntu desde Microsoft Store** (recomendado para mejor rendimiento)
    - WSL2 instalado (Docker Desktop lo instala automáticamente)
 
+Puedes comprobar si wsl está instalado ejecutando en un CMD
+```bash
+wsl --version
+```
+
 > **💡 Tip para Windows:** Docker funciona en Windows, pero es **50 veces más lento**. Ubuntu en WSL2 da velocidad nativa de Linux. Vale la pena los 5 minutos extra de configuración.
 
 ---
@@ -87,6 +92,8 @@ mkdir src
 sudo usermod -aG docker $USER
 ```
 
+⚠ Ahora debes cerrar la terminal para que se apliquen los cambios y volverla a abrir
+
 **4. Construye los contenedores**
 
 ```bash
@@ -99,7 +106,13 @@ docker compose build
 docker compose run --rm composer create-project laravel/laravel .
 ```
 
-**6. Configurar Laravel**
+**6. Levantar los contenedores**
+
+```bash
+docker compose up -d
+```
+
+**7. Configurar Laravel**
 
 Generar la clave de aplicación.
 
