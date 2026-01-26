@@ -70,9 +70,9 @@ laravel-docker-setup/          ← Repositorio (configuración Docker)
 
 ## 🚀 Inicio rápido
 
-### Instalación en 7 pasos
+### Instalación en 9 pasos
 
-**1. Clona este repositorio**
+# **1. Clona este repositorio**
 
 Es aquí donde determinas el nombre que le quieras dar a tu proyecto, el nombre por defecto es `mi-proyecto`
 ```bash
@@ -84,13 +84,13 @@ Accedemos al proyecto que acabamos de crear
 cd mi-proyecto
 ```
 
-**2. Crea la carpeta para Laravel**
+# **2. Crea la carpeta para Laravel**
 
 ```bash
 mkdir src
 ```
 
-**3. Agrega tu usuario al grupo Docker**
+# **3. Agrega tu usuario al grupo Docker**
 
 ```bash
 sudo usermod -aG docker $USER
@@ -98,20 +98,20 @@ sudo usermod -aG docker $USER
 
 ⚠️ Ahora debes cerrar la terminal para que se apliquen los cambios y volverla a abrir
 
-**4. Construye los contenedores**
+# **4. Construye los contenedores**
 
 ```bash
 docker compose build
 ```
 
-**5. Crea el proyecto Laravel**
+# **5. Crea el proyecto Laravel**
 
 ```bash
 docker compose run --rm composer create-project laravel/laravel .
 ```
 Esto instala todo lo necesario y se crea nuestro proyecto Laravel
 ⚠️
-**6. Modificar el .env**
+# **6. Modificar el .env**
 
 El proyecto Laravel que acabamos de instalar utiliza `sqlite` por defecto, esto debemos cambiarlo para que se ataque a la base de datos que usa nuestro contenedor `MySQL`
 
@@ -120,7 +120,12 @@ Accedemos a la carpeta de nuestro proyecto
 cd src/
 ```
 
-Y lanzamos Visual Studio Code para modificarlo. Una vez dentro, solo hay que encontrar el `.env` y modificar esta sección:
+Y lanzamos Visual Studio Code para modificarlo
+```bash
+code .
+```
+
+Una vez dentro, solo hay que encontrar el `.env` y modificar esta sección:
 ```bash
 DB_CONNECTION=sqlite
 # DB_HOST=127.0.0.1
@@ -147,13 +152,13 @@ Guardamos y volvemos a la ruta donde nos encontrabamos para seguir con la instal
 cd ..
 ```
 
-**7. Levantar los contenedores**
+# **7. Levantar los contenedores**
 
 ```bash
 docker compose up -d
 ```
 
-**8. Configurar Laravel**
+# **8. Configurar Laravel**
 
 Generar la clave de aplicación.
 
@@ -179,6 +184,54 @@ docker compose exec php php artisan migrate
 - Laravel incluye algunas tablas por defecto (usuarios, sesiones, etc.)
 - Nota: La primera vez puede no verse ningún cambio. El objetivo es verificar que la conexión a MySQL funciona correctamente.
 
+# **9. Configurar Vite**
+
+Si instalas **Laravel Breeze** o trabajas con assets frontend (JS/CSS), necesitas Vite.
+
+### 1. Instala las dependencias de Node
+
+```bash
+docker compose run --rm node npm install
+```
+
+### 2. Configura vite.config.js para Docker
+
+Ahora edita archivos (en VSCode) en `resources/css/` o `resources/js/` y los cambios se reflejan automáticamente.
+
+```javascript
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/css/app.css', 'resources/js/app.js'],
+            refresh: true,
+        }),
+    ],
+    server: {
+        host: '0.0.0.0',        // ← Escucha en todas las interfaces (Docker)
+        port: 5173,
+        strictPort: true,       // ← Falla si el puerto está ocupado
+        hmr: {
+            host: 'localhost',  // ← El navegador conecta a localhost
+            port: 5173,
+        },
+        watch: {
+            usePolling: true,   // ← Necesario para que funcione en Docker
+        },
+    },
+});
+```
+
+### 3. Compila los assets
+
+```bash
+docker compose run --rm --service-ports node npm run dev
+```
+
+Recuerda no cerrar el terminal o la app dejará de funcionar, es muy últil tenerlo abierto, pues aquí se podrán ver errores por parte de Vite.
+
 ---
 
 ## 🌐 Acceder a tu aplicación
@@ -190,6 +243,39 @@ Una vez configurado, tendrás acceso a:
 | **Laravel** | [http://localhost](http://localhost) | - |
 | **phpMyAdmin** | [http://localhost:8080](http://localhost:8080) | Usuario: `laravel`<br>Contraseña: `secret`<br>Servidor: `db` |
 | **Vite (dev)** | [http://localhost:5173](http://localhost:5173) | (cuando ejecutes `npm run dev`) |
+
+---
+
+### Workflow diario
+
+**Terminal 1:** Servicios de Laravel
+```bash
+docker compose up -d
+```
+
+```bash
+cd src/
+```
+
+**Terminal 2:** Vite en modo desarrollo (hot reload)
+```bash
+docker compose run --rm --service-ports node npm run dev
+# Deja este comando corriendo mientras desarrollas
+```
+
+---
+
+## 🎨 Frontend con Laravel Breeze
+
+Si necesitas autenticación (login, registro, etc.) con un frontend completo, consulta la guía de instalación de Laravel Breeze:
+
+➡️ **[Guía de instalación de Laravel Breeze](docs/02-Laravel-Breeze.md)**
+
+Esta guía cubre:
+- Instalación de Breeze
+- Configuración de Vite para Docker
+- Compilación de assets
+- Solución de problemas comunes
 
 ---
 
