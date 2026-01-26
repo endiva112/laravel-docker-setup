@@ -196,7 +196,7 @@ docker compose run --rm node npm install
 
 ### 2. Configura vite.config.js para Docker
 
-Ahora edita archivos (en VSCode) en `resources/css/` o `resources/js/` y los cambios se reflejan automáticamente.
+Ahora edita (en VSCode) en `vite.config.js` para poder usar Vite correctamente y que los cambios se reflejen automáticamente.
 
 ```javascript
 import { defineConfig } from 'vite';
